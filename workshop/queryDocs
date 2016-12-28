@@ -1,3 +1,10 @@
+/**
+ * this script runs a query that retrieves all documents of type (schema) "forbiddendestinations" that were
+ * modified after "2016-12-22T10:50:02+0000". It also calculates the sum of bytes's value field on all documents
+ * ("aggregateGlobal":"true"), preventing that calculation at the page scope ("aggregatePage": "false")
+ * resturned documents are grouped by the dst field ( "aggregateGroupBy": "dst<string>")
+ */
+
 var document = require("document");
 
 var params = {
