@@ -1,0 +1,14 @@
+var document = require("document");
+
+var params = {
+  "query": 'apsdb.schema="forbiddendestinations" and lastModifiedDate<date> > "2016-12-22T10:50:02+0000"',
+  //"query": 'dst = "157.56.96.58" and lastModifiedDate<date> > "2016-12-22"',
+  "fields": "*",
+  "count": "true",
+  "aggregateGlobal":"true",
+  "aggregatePage": "false",
+  "aggregateExpression": "SUM($bytes)",
+  "aggregateGroupBy": "dst<string>"
+};
+
+return document.query(params).result;

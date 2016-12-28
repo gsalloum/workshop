@@ -1,0 +1,28 @@
+var schema = require("schema");
+var list = schema.list();
+var headers = {
+	"Content-Type": "text/xml"  
+} ;
+
+var name = request.parameters.name;
+if (!name){
+  
+  return {
+    "errorCode": "MISSING_PARAMETER",
+    "errorDetail": "name parameter cannot be null or empty"
+  };
+}
+
+/**
+ * useless happy looping
+ */
+/*
+var aSchema = null;
+for (var i = 0; !aSchema && i <  list.result.schemas.length; i++) {
+  aSchema = list.result.schemas[i].name == name ? list.result.schemas[i] : null;
+}
+*/
+
+response.addHeaders(headers);
+response.write(schema.get(name).result);
+response.flush();

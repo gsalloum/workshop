@@ -1,0 +1,18 @@
+var document = require("document");
+
+var params = {
+  "query": 'apsdb.schema="forbiddendestinations"',
+  "fields": "key,bytes",
+  "count": "true",
+  "aggregateGlobal":"true",
+  "aggregateExpression": "SUM($bytes)"
+};
+
+
+var start = new Date().getTime();
+var resp =  document.query(params);
+var end = new Date().getTime();
+return {
+  resp : resp,
+  time: end - start
+};

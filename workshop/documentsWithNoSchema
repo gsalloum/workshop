@@ -1,0 +1,24 @@
+var document = require("document");
+
+var http = require("http");
+var reqpParams={
+  method:"GET",
+  url:"laxhttps://185.127.180.100/api/?type=report&reporttype=predefined&reportname=top-denied-destinations&key=LUFRPT1Na25Bd0RUZFd1RTZ4Q1E5UHdnN3pqcHh5dmc9eGZPKytGbnAzY2VEWTNnc1VFV2R2dz09"  
+};
+
+var payload = http.request(reqpParams).body;
+
+var json = betaUtils.xmlToJson(payload);
+var entry = json.result.entry;
+for (var i = 0;  i < entry.length; i++){
+  
+  var data = entry[i];
+  data["meta.schema"] = "forbiddendestinations";
+  var resp = document.create(data);
+  if (resp.metadata.status == "failure") {
+    return resp.metadata;
+  }
+}
+
+return "success";
+

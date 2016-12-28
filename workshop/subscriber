@@ -1,0 +1,3 @@
+var log = require("log");
+log.setLevel("info");
+return request.rawBody;

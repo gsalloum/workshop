@@ -1,0 +1,6 @@
+/**
+ * Create a schedule instance of the workshop/schedule script
+ */
+
+return schedule("workshop/scheduled", "* * * * ?");
+

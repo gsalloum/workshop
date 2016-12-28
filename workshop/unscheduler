@@ -1,0 +1,16 @@
+/**
+ * Unschedule all scheduled scripts instances
+ */
+
+var document = require("document");
+var allScheduledScripts = { 
+  "query": "apsST_scriptName is not null",
+  "fields":"*"
+};
+
+var allScheduled = document.query(allScheduledScripts).result.documents;
+for (var i = 0; i < allScheduled.length; i++){
+  unschedule(allScheduled[i].key);
+}
+
+return "ok";

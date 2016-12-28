@@ -1,0 +1,20 @@
+var log = require("log");
+var document = require("document");
+log.setLevel("info");
+
+if (!storage.global.counter) {
+ storage.global.counter = 0;
+}
+
+storage.global.counter += 1;
+
+var fields = {
+
+  "key": request.parameters["apsdb.documentKey"],
+  "counter": storage.global.counter
+};
+
+document.update(fields);
+
+log.info("Counter " + storage.global.counter);
+log.info("parameters doc key " + JSON.stringify(request.parameters["apsdb.documentKey"]));

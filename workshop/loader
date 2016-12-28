@@ -1,0 +1,100 @@
+var document = require("document");
+var log = require("log"); log.setLevel("info");
+var http = require("http");
+var momentjs = require("/modules/momentjs/moment.min.js");
+
+var now = new Date();
+var startTime = getLastExecutionTime();
+if (!startTime) {
+  startTime = momentjs.moment(now).subtract(10, 'minutes');
+}
+
+startTime = momentjs.moment(startTime).utc("Asia/Beirut").format("YYYY/MM/DD hh:mm:ss");
+var endTime = momentjs.moment(now).utc("Asia/Beirut").format("YYYY/MM/DD hh:mm:ss");
+
+/**
+ * Prepare the parameters of the request that will be sent to the router to obtain the latest topn XML documents
+ */
+var params = {
+  
+  startTime: startTime,
+  endTime: endTime,
+  type: "report",
+  reporttype: "dynamic",
+  reportname: "top-dst-summary",
+  topn:10,
+  key: "LUFRPT1Na25Bd0RUZFd1RTZ4Q1E5UHdnN3pqcHh5dmc9eGZPKytGbnAzY2VEWTNnc1VFV2R2dz09"
+};
+
+/**
+ * Prepare the HTTP request to the router
+ */
+var reqpParams = {
+  
+  method:"GET", //optional when GET
+  url:"laxhttps://185.127.180.100/api/",
+  params: params
+};
+
+/**
+ * Get the payload from the HTTP response (i.e. body property of the response)
+ */
+var payload = http.request(reqpParams).body; 
+
+/**
+ * use the xmlToJson  utility to transform the XML pay\load into JSON (NB: betaUtils will be remove in the near future, 
+ * function will remain the same
+ */
+var json = betaUtils.xmlToJson(payload); 
+var entry = json.report.result.entry;
+log.info("JSON RESULT " + JSON.stringify(json));
+
+/**
+ * Loop through the entity array if any and create a new document base don the "forbiddendestinations" schema
+ */
+for (var i = 0;  entry && i < entry.length; i++){
+  
+  var data = entry[i]; 
+  data["meta.schema"] = "forbiddendestinations"; // IMPORTANT: specify what schema to use if required
+  var resp = document.create(data);
+  if (resp.metadata.status == "failure") {
+    return resp.metadata;
+  }
+}
+
+return "success";
+
+function getLastExecutionTime(now){
+    
+  /* 
+   * retrieve the document key of the document that is associated to the current schedule script instance from the request 
+   */
+  var docKey = request.parameters["apsdb.documentKey"];
+  
+  /*
+   * Option 1 - query all documents where key = docKey, should return an array of one document, i.e. the document that is associated to
+   * the current script instance
+   */
+  var getMyDoc = document.query({"query":'key = "' + docKey + '"', "fields":"*"});
+  log.info("Query result " + JSON.stringify(getMyDoc));
+  var doc = getMyDoc.result.documents[0];
+  
+  /*
+   * Option 2- get the document by key, where key = docKey. i.e. the document that is associated to
+   * the current script instance
+   */  
+  // var getResponse = document.get(docKey);
+  //var doc = getResponse.result;
+  
+  /*
+   * Optional check for failure further to to the invocation of the document.get() or document.query() API
+   */
+  /*if (getResponse.metadata.status == "failure") {
+    throw getResponse.metadata;
+  }*/
+  
+  /*
+   * Get the last the script instance was automatically executed by the cron
+   */
+  var lastExecTime = doc && doc.apsST_lastFireTime ? doc.apsST_lastFireTime: "";
+}
