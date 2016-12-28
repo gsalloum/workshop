@@ -1,3 +1,9 @@
+/**
+ * this script runs a query to sum the value of the bytes fields of all documents of type "forbiddendestinations"
+ * (i.e. schema name is "forbiddendestinations"). The aggregation encompasses all documents thanks to "aggregateGlobal":"true"
+ * it returns the time taken by the query to execute
+ */
+
 var document = require("document");
 
 var params = {
